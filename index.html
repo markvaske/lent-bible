@@ -797,28 +797,30 @@ body > *:not(.bg-canvas) {
   border: 2px solid transparent;
   border-radius: 8px;
   background: color-mix(in srgb, var(--lit-accent) 15%, transparent);
-  color: rgba(255,255,255,0.8);
+  color: rgba(255,255,255,0.7);
   cursor: pointer;
-  font-size: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  padding: 0;
+  padding: 10px;
+}
+
+.icon-btn svg {
+  width: 100%;
+  height: 100%;
 }
 
 .icon-btn:hover {
   background: color-mix(in srgb, var(--lit-accent) 30%, transparent);
+  color: rgba(255,255,255,0.95);
   transform: scale(1.05);
 }
 
 .icon-btn.active {
   border-color: color-mix(in srgb, var(--lit-accent) 80%, white);
   background: color-mix(in srgb, var(--lit-accent) 40%, transparent);
-}
-
-.icon-emoji {
-  display: inline-block;
+  color: #fff;
 }
 
 /* ── Responsive ── */
@@ -1081,22 +1083,47 @@ body > *:not(.bg-canvas) {
 <!-- Icon Navigation (Mobile-friendly tabs) -->
 <div class="icon-nav" id="iconNav">
   <button class="icon-btn active" data-section="reading" title="Daily Reading">
-    <span class="icon-emoji">📖</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2 6s2-2 6-2 6 2 6 2v13s-2-1.5-6-1.5S2 19 2 19V6z"/>
+      <path d="M14 6s2-2 6-2v13s-2-1-6-1"/>
+      <line x1="12" y1="6" x2="12" y2="17.5"/>
+    </svg>
   </button>
   <button class="icon-btn" data-section="feast" title="Feast Day">
-    <span class="icon-emoji">🕯️</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="2" x2="12" y2="5"/>
+      <path d="M9 5.5c0-1 .5-2 1.5-2.5C11.5 4 12 5 12 5.5s.5 2 1.5 1.5C14.5 6.5 15 5.5 15 5.5"/>
+      <rect x="9" y="5" width="6" height="14" rx="1"/>
+      <path d="M9 13h6"/>
+      <path d="M7 19h10"/>
+    </svg>
   </button>
   <button class="icon-btn" data-section="bookmarks" title="Bookmarks">
-    <span class="icon-emoji">🔖</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/>
+    </svg>
   </button>
   <button class="icon-btn" data-section="prayers" title="Prayers & Creeds">
-    <span class="icon-emoji">✝️</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="3" x2="12" y2="21"/>
+      <line x1="5" y1="10" x2="19" y2="10"/>
+    </svg>
   </button>
   <button class="icon-btn" data-section="calendar" title="Calendar">
-    <span class="icon-emoji">📅</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2"/>
+      <line x1="3" y1="9" x2="21" y2="9"/>
+      <line x1="8" y1="2" x2="8" y2="6"/>
+      <line x1="16" y1="2" x2="16" y2="6"/>
+      <rect x="9" y="13" width="3" height="3" rx="0.5"/>
+    </svg>
   </button>
   <button class="icon-btn" data-section="reflection" title="Daily Reflection">
-    <span class="icon-emoji">🕊️</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3C9 3 6 5.5 6 9c0 2.5 1.5 4.5 3.5 5.5L9 18h6l-.5-3.5C16.5 13.5 18 11.5 18 9c0-3.5-3-6-6-6z"/>
+      <line x1="9" y1="21" x2="15" y2="21"/>
+      <line x1="10" y1="18" x2="14" y2="18"/>
+    </svg>
   </button>
 </div>
 
@@ -2510,15 +2537,22 @@ document.querySelectorAll('.icon-btn').forEach(btn => {
 });
 
 // Touch swipe (day navigation)
+// Touch swipe — limited to the day-header bar only
 let touchStartX = 0;
-document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
-document.addEventListener('touchend', e => {
-  const diff = touchStartX - e.changedTouches[0].screenX;
-  if (Math.abs(diff) > 60) {
-    if (diff > 0 && currentDateIdx < dates.length - 1) { currentDateIdx++; loadDay(); }
-    else if (diff < 0 && currentDateIdx > 0) { currentDateIdx--; loadDay(); }
+let touchStartY = 0;
+const dayHeader = document.querySelector('.day-header');
+dayHeader.addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].screenX;
+  touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+dayHeader.addEventListener('touchend', e => {
+  const dx = touchStartX - e.changedTouches[0].screenX;
+  const dy = Math.abs(touchStartY - e.changedTouches[0].screenY);
+  if (Math.abs(dx) > 50 && dy < 30) { // horizontal swipe, not vertical scroll
+    if (dx > 0 && currentDateIdx < dates.length - 1) { currentDateIdx++; loadDay(); }
+    else if (dx < 0 && currentDateIdx > 0) { currentDateIdx--; loadDay(); }
   }
-});
+}, { passive: true });
 
 // Resize — repaint background
 let resizeTimer;
