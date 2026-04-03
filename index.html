@@ -104,23 +104,23 @@ body > *:not(.bg-canvas) {
 }
 
 .day-header-btn {
-  width: 30px;
-  height: 30px;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.06);
-  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: none;
   color: rgba(255,255,255,0.7);
-  font-size: 0.9rem;
+  font-size: 1.4rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: color 0.2s;
   flex-shrink: 0;
+  padding: 0;
 }
 
-.day-header-btn:hover { background: rgba(255,255,255,0.16); }
-.day-header-btn:disabled { opacity: 0.3; cursor: default; }
+.day-header-btn:hover { color: rgba(255,255,255,1); }
+.day-header-btn:disabled { opacity: 0.25; cursor: default; }
 
 .day-header-info {
   text-align: center;
@@ -167,9 +167,11 @@ body > *:not(.bg-canvas) {
 }
 
 .page-inner .cal-month-btn {
-  border-color: var(--divider);
-  background: rgba(0,0,0,0.05);
   color: var(--heading-color);
+}
+
+.page-inner .cal-month-btn:hover {
+  color: var(--ref-color);
 }
 
 .page-inner .cal-weekday {
@@ -206,21 +208,21 @@ body > *:not(.bg-canvas) {
 }
 
 .cal-month-btn {
-  width: 22px;
-  height: 22px;
-  border: 1px solid rgba(255,255,255,0.15);
-  background: rgba(255,255,255,0.06);
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
   color: rgba(255,255,255,0.6);
-  font-size: 0.6rem;
+  font-size: 1.1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: color 0.2s;
+  padding: 0;
 }
 
-.cal-month-btn:hover { background: rgba(255,255,255,0.15); }
+.cal-month-btn:hover { color: rgba(255,255,255,1); background: none; }
 
 .cal-weekdays {
   display: grid;
@@ -878,13 +880,17 @@ body > *:not(.bg-canvas) {
   }
 
   .section-heading {
-    font-size: 1.02rem;
+    font-size: clamp(1rem, 4vw, 1.15rem);
     margin-top: 14px;
   }
 
   .reading-text, .reading-text-wrap {
-    font-size: 0.85rem;
-    line-height: 1.6;
+    font-size: clamp(1rem, 4.2vw, 1.1rem);
+    line-height: 1.7;
+  }
+
+  .section-ref {
+    font-size: clamp(0.72rem, 3vw, 0.82rem);
   }
 
   .nav-bar {
@@ -910,16 +916,10 @@ body > *:not(.bg-canvas) {
     min-height: 44px;
   }
 
-  .day-header-btn {
+  .day-header-btn,
+  .bookmark-btn,
+  .cal-month-btn {
     min-height: 0;
-    width: 44px;
-    height: 44px;
-  }
-
-  .bookmark-btn {
-    min-height: 0;
-    width: 44px;
-    height: 44px;
   }
 }
 
