@@ -93,11 +93,14 @@ body > *:not(.bg-canvas) {
 
 /* ── Day Header (above page card) ── */
 .day-header {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 0 4px 10px;
+  padding: 10px 4px;
+  background: rgba(0,0,0,0.08);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
 .day-header-btn {
@@ -150,6 +153,35 @@ body > *:not(.bg-canvas) {
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 12px;
   padding: 14px;
+}
+
+/* Calendar inside light page card */
+.page-inner .sidebar-calendar {
+  background: rgba(0,0,0,0.03);
+  border-color: var(--divider);
+  width: 100%;
+}
+
+.page-inner .cal-month-label {
+  color: var(--heading-color);
+}
+
+.page-inner .cal-month-btn {
+  border-color: var(--divider);
+  background: rgba(0,0,0,0.04);
+  color: var(--heading-color);
+}
+
+.page-inner .cal-weekday {
+  color: var(--ref-color);
+}
+
+.page-inner .cal-day {
+  color: var(--page-text);
+}
+
+.page-inner .cal-legend-item {
+  color: var(--page-text);
 }
 
 .cal-header {
@@ -643,6 +675,36 @@ body > *:not(.bg-canvas) {
   opacity: 0.6;
 }
 
+/* Prayer and Bookmark links in content area */
+.prayer-link,
+.bookmark-link {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  margin: 8px 0;
+  border: 1px solid var(--divider);
+  background: rgba(255,255,255,0.05);
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.95rem;
+  color: var(--heading-color);
+  transition: all 0.2s ease;
+}
+
+.prayer-link:hover,
+.bookmark-link:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: var(--heading-color);
+  transform: translateX(4px);
+}
+
+.prayer-link:active,
+.bookmark-link:active {
+  background: rgba(255,255,255,0.18);
+}
+
 /* Back to readings button in book */
 .back-to-readings {
   display: inline-block;
@@ -704,6 +766,49 @@ body > *:not(.bg-canvas) {
   font-size: 0.65rem;
 }
 
+/* ── Icon Navigation (Tab buttons) ── */
+.icon-nav {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(0,0,0,0.1);
+  overflow-x: auto;
+  flex-wrap: wrap;
+  justify-content: center;
+  z-index: 150;
+}
+
+.icon-btn {
+  flex: 0 0 auto;
+  width: 50px;
+  height: 50px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.8);
+  cursor: pointer;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.icon-btn:hover {
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.05);
+}
+
+.icon-btn.active {
+  border-color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.25);
+}
+
+.icon-emoji {
+  display: inline-block;
+}
+
 /* ── Responsive ── */
 @media (max-width: 1100px) {
   .right-sidebar { flex: 0 0 220px; max-width: 220px; }
@@ -738,42 +843,24 @@ body > *:not(.bg-canvas) {
 @media (max-width: 640px) {
   /* Mobile-first: prioritize reading content */
   .content-area {
-    padding: 8px 8px 6px;
+    padding: 12px 12px 8px 12px;
     flex-direction: column;
-    gap: 8px;
+    gap: 0;
   }
 
   .page-column {
     flex: 1 1 auto;
     min-height: 0;
-    order: 1;
+    padding: 0;
   }
 
+  /* Hide sidebar on mobile - content loads via icon nav buttons */
   .right-sidebar {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 6px;
-    order: 2;
-    margin-top: 4px;
-  }
-
-  .right-sidebar > * {
-    flex: 0 1 calc(50% - 3px);
-    min-height: 50px;
-  }
-
-  .sidebar-calendar {
-    flex: 0 1 100%;
-  }
-
-  .widget-box {
-    min-height: 50px;
-    padding: 10px 12px;
-    font-size: 0.85rem;
+    display: none !important;
   }
 
   .page-inner {
-    padding: 16px 18px;
+    padding: 24px 20px;
   }
 
   .section-heading {
@@ -795,13 +882,20 @@ body > *:not(.bg-canvas) {
     display: none;
   }
 
+  .day-header {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
   .day-header-feast {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+  }
+
+  .day-header-date {
+    font-size: 0.7rem;
   }
 
   /* Improve tap targets on mobile */
-  .feast-card,
-  .widget-box,
   button {
     min-height: 44px;
   }
@@ -964,18 +1058,42 @@ body > *:not(.bg-canvas) {
   <input type="date" class="hidden-date-input" id="datePicker">
 </div>
 
+<!-- Icon Navigation (Mobile-friendly tabs) -->
+<div class="icon-nav" id="iconNav">
+  <button class="icon-btn active" data-section="reading" title="Daily Reading">
+    <span class="icon-emoji">📖</span>
+  </button>
+  <button class="icon-btn" data-section="feast" title="Feast Day">
+    <span class="icon-emoji">🕯️</span>
+  </button>
+  <button class="icon-btn" data-section="bookmarks" title="Bookmarks">
+    <span class="icon-emoji">🔖</span>
+  </button>
+  <button class="icon-btn" data-section="prayers" title="Prayers & Creeds">
+    <span class="icon-emoji">✝️</span>
+  </button>
+  <button class="icon-btn" data-section="calendar" title="Calendar">
+    <span class="icon-emoji">📅</span>
+  </button>
+  <button class="icon-btn" data-section="reflection" title="Daily Reflection">
+    <span class="icon-emoji">🕊️</span>
+  </button>
+</div>
+
+<!-- Day Header (Date & Feast Navigation) -->
+<div class="day-header">
+  <button class="day-header-btn" id="prevDay">&#8249;</button>
+  <div class="day-header-info" id="dateDisplay">
+    <div class="day-header-feast" id="feastName"></div>
+    <div class="day-header-date" id="dateText"></div>
+  </div>
+  <button class="day-header-btn" id="nextDay">&#8250;</button>
+  <button class="bookmark-btn" id="bookmarkBtn" title="Bookmark this day">&#9734;</button>
+</div>
+
 <!-- Content Area: Single Page Column + Sidebar -->
 <div class="content-area">
   <div class="page-column">
-    <div class="day-header">
-      <button class="day-header-btn" id="prevDay">&#8249;</button>
-      <div class="day-header-info" id="dateDisplay">
-        <div class="day-header-feast" id="feastName"></div>
-        <div class="day-header-date" id="dateText"></div>
-      </div>
-      <button class="day-header-btn" id="nextDay">&#8250;</button>
-      <button class="bookmark-btn" id="bookmarkBtn" title="Bookmark this day">&#9734;</button>
-    </div>
     <div class="page-card" id="pageCard">
       <div class="page-inner" id="pageInner">
       </div>
@@ -2101,6 +2219,12 @@ function loadDay() {
   // Update bookmark button and widget
   updateBookmarkBtn(dateStr);
   renderBookmarksWidget();
+
+  // Reset to reading section
+  currentSection = 'reading';
+  document.querySelectorAll('.icon-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.section === 'reading');
+  });
 }
 
 // ══════════════════════════════════════════════════
@@ -2133,6 +2257,222 @@ document.addEventListener('keydown', (e) => {
   } else if (e.key === 'k' || e.key === 'K') {
     if (currentDateIdx < dates.length - 1) { currentDateIdx++; loadDay(); }
   }
+});
+
+// ══════════════════════════════════════════════════
+// ICON NAVIGATION (Content Switching)
+// ══════════════════════════════════════════════════
+let currentSection = 'reading'; // Track which section is active
+
+function switchSection(section) {
+  const dateStr = dates[currentDateIdx];
+  const data = READINGS_DATA[dateStr];
+  if (!data) return;
+
+  currentSection = section;
+
+  // Update active button
+  document.querySelectorAll('.icon-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.section === section);
+  });
+
+  const pageInner = document.getElementById('pageInner');
+
+  if (section === 'reading') {
+    // Show daily reading
+    showingPrayer = false;
+    const items = buildReadingItems(data, dateStr);
+    renderContent(items);
+  } else if (section === 'feast') {
+    // Show feast day info
+    showingPrayer = true;
+    const items = [];
+
+    items.push({
+      type: 'heading',
+      html: `<div class="prayer-title-page">${data.feastInfo?.title || data.feast}</div>`
+    });
+
+    if (data.feastInfo?.desc) {
+      items.push({
+        type: 'paragraph',
+        html: `<div class="reading-text-wrap">${data.feastInfo.desc}</div>`
+      });
+    }
+
+    items.push({
+      type: 'paragraph',
+      html: '<div><button class="back-to-readings" id="backToReadings">&larr; Back to Readings</button></div>'
+    });
+
+    renderContent(items);
+  } else if (section === 'bookmarks') {
+    // Show bookmarks list
+    showingPrayer = true;
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    const items = [];
+
+    items.push({
+      type: 'heading',
+      html: '<div class="prayer-title-page">Bookmarks</div>'
+    });
+
+    if (bookmarks.length === 0) {
+      items.push({
+        type: 'paragraph',
+        html: '<div class="reading-text-wrap">No bookmarks yet. Click the star icon on any day to bookmark it.</div>'
+      });
+    } else {
+      bookmarks.forEach(bmDate => {
+        const bmData = READINGS_DATA[bmDate];
+        if (bmData) {
+          const d = new Date(bmDate + 'T12:00:00');
+          const dateStr2 = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          items.push({
+            type: 'paragraph',
+            html: `<div class="reading-text-wrap"><button class="bookmark-link" data-date="${bmDate}">${bmData.feast} — ${dateStr2}</button></div>`
+          });
+        }
+      });
+    }
+
+    items.push({
+      type: 'paragraph',
+      html: '<div><button class="back-to-readings" id="backToReadings">&larr; Back to Readings</button></div>'
+    });
+
+    renderContent(items);
+
+    // Add bookmark link click handlers
+    setTimeout(() => {
+      document.querySelectorAll('.bookmark-link').forEach(link => {
+        link.addEventListener('click', () => {
+          const idx = dates.indexOf(link.dataset.date);
+          if (idx >= 0) { currentDateIdx = idx; loadDay(); switchSection('reading'); }
+        });
+      });
+    }, 0);
+  } else if (section === 'prayers') {
+    // Show prayers/creeds
+    showingPrayer = true;
+    const items = [];
+
+    items.push({
+      type: 'heading',
+      html: '<div class="prayer-title-page">Prayers & Creeds</div>'
+    });
+
+    const prayerKeys = ['ourFather', 'hailMary', 'gloryBe', 'apostlesCreed', 'niceneCreed', 'confiteor'];
+    prayerKeys.forEach(key => {
+      const prayer = PRAYERS[key];
+      if (prayer) {
+        items.push({
+          type: 'paragraph',
+          html: `<button class="prayer-link" data-prayer="${key}"><strong>${prayer.title}</strong></button>`
+        });
+      }
+    });
+
+    items.push({
+      type: 'paragraph',
+      html: '<div><button class="back-to-readings" id="backToReadings">&larr; Back to Readings</button></div>'
+    });
+
+    renderContent(items);
+
+    // Add prayer link click handlers
+    setTimeout(() => {
+      document.querySelectorAll('.prayer-link').forEach(link => {
+        link.addEventListener('click', () => {
+          showPrayer(link.dataset.prayer);
+        });
+      });
+    }, 0);
+  } else if (section === 'reflection') {
+    // Show daily reflection/analysis
+    showingPrayer = true;
+    const reflection = ANALYSIS_DATA[dateStr];
+    const items = [];
+
+    if (reflection) {
+      items.push({
+        type: 'heading',
+        html: `<div class="prayer-title-page">${reflection.title || 'Daily Reflection'}</div>`
+      });
+
+      if (reflection.context) {
+        items.push({
+          type: 'paragraph',
+          html: `<div class="reading-text-wrap"><strong>Context:</strong> ${reflection.context}</div>`
+        });
+      }
+
+      if (reflection.reflection) {
+        items.push({
+          type: 'paragraph',
+          html: `<div class="reading-text-wrap">${reflection.reflection}</div>`
+        });
+      }
+    } else {
+      items.push({
+        type: 'heading',
+        html: '<div class="prayer-title-page">Daily Reflection</div>'
+      });
+      items.push({
+        type: 'paragraph',
+        html: '<div class="reading-text-wrap">No reflection available for this day.</div>'
+      });
+    }
+
+    items.push({
+      type: 'paragraph',
+      html: '<div><button class="back-to-readings" id="backToReadings">&larr; Back to Readings</button></div>'
+    });
+
+    renderContent(items);
+  } else if (section === 'calendar') {
+    // Move the sidebar calendar element into the page-inner
+    showingPrayer = true;
+    const pageInnerEl = document.getElementById('pageInner');
+    pageInnerEl.innerHTML = '<div class="prayer-title-page">Calendar</div>';
+
+    const calEl = document.getElementById('sidebarCalendar');
+    calEl.style.display = 'block';
+    pageInnerEl.appendChild(calEl);
+
+    const backDiv = document.createElement('div');
+    backDiv.style.marginTop = '16px';
+    backDiv.innerHTML = '<button class="back-to-readings" id="backToReadings">&larr; Back to Readings</button>';
+    pageInnerEl.appendChild(backDiv);
+
+    renderCalendar();
+  }
+
+  // Return calendar to sidebar if we're not in calendar section
+  if (section !== 'calendar') {
+    const calEl = document.getElementById('sidebarCalendar');
+    if (calEl && calEl.parentElement !== document.getElementById('rightSidebar')) {
+      document.getElementById('rightSidebar').insertBefore(calEl, document.querySelector('.widget-box'));
+      calEl.style.display = '';
+    }
+  }
+
+  // Re-attach back buttons
+  setTimeout(() => {
+    const backBtn = document.getElementById('backToReadings');
+    if (backBtn) {
+      backBtn.addEventListener('click', () => {
+        switchSection('reading');
+      });
+    }
+  }, 0);
+}
+
+// Icon button click handlers
+document.querySelectorAll('.icon-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    switchSection(btn.dataset.section);
+  });
 });
 
 // Touch swipe (day navigation)
