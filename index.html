@@ -890,10 +890,6 @@ body > *:not(.bg-canvas) {
     gap: 8px;
   }
 
-  .nav-brand h1 {
-    display: none;
-  }
-
   .day-header {
     padding: 8px 12px;
     font-size: 0.9rem;
@@ -907,9 +903,21 @@ body > *:not(.bg-canvas) {
     font-size: 0.7rem;
   }
 
-  /* Improve tap targets on mobile */
+  /* Improve tap targets on mobile, but preserve circular nav buttons */
   button {
     min-height: 44px;
+  }
+
+  .day-header-btn {
+    min-height: 0;
+    width: 44px;
+    height: 44px;
+  }
+
+  .bookmark-btn {
+    min-height: 0;
+    width: 44px;
+    height: 44px;
   }
 }
 
@@ -2195,6 +2203,15 @@ function renderContent(items) {
 // ══════════════════════════════════════════════════
 function loadDay() {
   showingPrayer = false;
+
+  // Always restore calendar element to sidebar before rendering
+  const calEl = document.getElementById('sidebarCalendar');
+  if (calEl && calEl.parentElement !== document.getElementById('rightSidebar')) {
+    const widgetBox = document.querySelector('.widget-box');
+    document.getElementById('rightSidebar').insertBefore(calEl, widgetBox);
+    calEl.style.display = '';
+  }
+
   const dateStr = dates[currentDateIdx];
   const data = READINGS_DATA[dateStr];
   if (!data) return;
@@ -2480,10 +2497,15 @@ function switchSection(section) {
   }, 0);
 }
 
-// Icon button click handlers
+// Icon button click handlers — tap active icon again to return to reading
 document.querySelectorAll('.icon-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    switchSection(btn.dataset.section);
+    const target = btn.dataset.section;
+    if (target === currentSection && target !== 'reading') {
+      switchSection('reading');
+    } else {
+      switchSection(target);
+    }
   });
 });
 
