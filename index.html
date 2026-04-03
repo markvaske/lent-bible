@@ -168,7 +168,7 @@ body > *:not(.bg-canvas) {
 
 .page-inner .cal-month-btn {
   border-color: var(--divider);
-  background: rgba(0,0,0,0.04);
+  background: rgba(0,0,0,0.05);
   color: var(--heading-color);
 }
 
@@ -176,12 +176,18 @@ body > *:not(.bg-canvas) {
   color: var(--ref-color);
 }
 
+/* Override the per-day inline color so all days stay legible on white */
 .page-inner .cal-day {
-  color: var(--page-text);
+  color: var(--page-text) !important;
+}
+
+.page-inner .cal-day.outside {
+  opacity: 0.25;
 }
 
 .page-inner .cal-legend-item {
   color: var(--page-text);
+  opacity: 0.75;
 }
 
 .cal-header {
@@ -768,14 +774,20 @@ body > *:not(.bg-canvas) {
 
 /* ── Icon Navigation (Tab buttons) ── */
 .icon-nav {
-  display: flex;
-  gap: 8px;
-  padding: 8px 12px;
-  background: rgba(0,0,0,0.1);
-  overflow-x: auto;
-  flex-wrap: wrap;
-  justify-content: center;
-  z-index: 150;
+  display: none; /* hidden on desktop — sidebar handles navigation */
+}
+
+@media (max-width: 900px) {
+  .icon-nav {
+    display: flex;
+    gap: 8px;
+    padding: 10px 16px;
+    background: color-mix(in srgb, var(--lit-bg-1) 75%, transparent);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    overflow-x: auto;
+    justify-content: center;
+    z-index: 150;
+  }
 }
 
 .icon-btn {
@@ -784,7 +796,7 @@ body > *:not(.bg-canvas) {
   height: 50px;
   border: 2px solid transparent;
   border-radius: 8px;
-  background: rgba(255,255,255,0.1);
+  background: color-mix(in srgb, var(--lit-accent) 15%, transparent);
   color: rgba(255,255,255,0.8);
   cursor: pointer;
   font-size: 1.5rem;
@@ -796,13 +808,13 @@ body > *:not(.bg-canvas) {
 }
 
 .icon-btn:hover {
-  background: rgba(255,255,255,0.2);
+  background: color-mix(in srgb, var(--lit-accent) 30%, transparent);
   transform: scale(1.05);
 }
 
 .icon-btn.active {
-  border-color: rgba(255,255,255,0.6);
-  background: rgba(255,255,255,0.25);
+  border-color: color-mix(in srgb, var(--lit-accent) 80%, white);
+  background: color-mix(in srgb, var(--lit-accent) 40%, transparent);
 }
 
 .icon-emoji {
