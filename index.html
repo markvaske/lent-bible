@@ -856,24 +856,27 @@ body > *:not(.bg-canvas) {
   .day-header-feast { font-size: 0.9rem; }
 }
 
-@media (max-width: 640px) {
-  /* Mobile-first: prioritize reading content */
+/* Hide sidebar whenever icon nav is visible — same breakpoint */
+@media (max-width: 900px) {
+  .right-sidebar {
+    display: none !important;
+  }
   .content-area {
     padding: 12px 12px 8px 12px;
     flex-direction: column;
     gap: 0;
+    justify-content: flex-start;
   }
-
   .page-column {
     flex: 1 1 auto;
     min-height: 0;
+    max-width: 100%;
     padding: 0;
   }
+}
 
-  /* Hide sidebar on mobile - content loads via icon nav buttons */
-  .right-sidebar {
-    display: none !important;
-  }
+@media (max-width: 640px) {
+  /* Tighter padding on small phones */
 
   .page-inner {
     padding: 24px 20px;
@@ -2325,6 +2328,16 @@ function switchSection(section) {
   const data = READINGS_DATA[dateStr];
   if (!data) return;
 
+  // ALWAYS restore sidebarCalendar to the sidebar FIRST, before any innerHTML changes
+  // Without this, renderContent's innerHTML= destroys the element permanently
+  if (section !== 'calendar') {
+    const calEl = document.getElementById('sidebarCalendar');
+    if (calEl && calEl.parentElement !== document.getElementById('rightSidebar')) {
+      document.getElementById('rightSidebar').insertBefore(calEl, document.querySelector('.widget-box'));
+      calEl.style.display = '';
+    }
+  }
+
   currentSection = section;
 
   // Update active button
@@ -2505,14 +2518,6 @@ function switchSection(section) {
   }
 
   // Return calendar to sidebar if we're not in calendar section
-  if (section !== 'calendar') {
-    const calEl = document.getElementById('sidebarCalendar');
-    if (calEl && calEl.parentElement !== document.getElementById('rightSidebar')) {
-      document.getElementById('rightSidebar').insertBefore(calEl, document.querySelector('.widget-box'));
-      calEl.style.display = '';
-    }
-  }
-
   // Re-attach back buttons
   setTimeout(() => {
     const backBtn = document.getElementById('backToReadings');
