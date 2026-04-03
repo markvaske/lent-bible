@@ -736,15 +736,75 @@ body > *:not(.bg-canvas) {
 }
 
 @media (max-width: 640px) {
-  .content-area { padding: 8px 8px 6px; }
-  .right-sidebar { flex-direction: column; gap: 8px; }
-  .widget-box { min-height: 60px; }
-  .page-inner { padding: 20px 22px; }
-  .section-heading { font-size: 1.05rem; }
-  .reading-text, .reading-text-wrap { font-size: 0.82rem; line-height: 1.55; }
-  .nav-bar { padding: 8px 12px; gap: 8px; }
-  .nav-brand h1 { display: none; }
-  .day-header-feast { font-size: 0.8rem; }
+  /* Mobile-first: prioritize reading content */
+  .content-area {
+    padding: 8px 8px 6px;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .page-column {
+    flex: 1 1 auto;
+    min-height: 0;
+    order: 1;
+  }
+
+  .right-sidebar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    order: 2;
+    margin-top: 4px;
+  }
+
+  .right-sidebar > * {
+    flex: 0 1 calc(50% - 3px);
+    min-height: 50px;
+  }
+
+  .sidebar-calendar {
+    flex: 0 1 100%;
+  }
+
+  .widget-box {
+    min-height: 50px;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  .page-inner {
+    padding: 16px 18px;
+  }
+
+  .section-heading {
+    font-size: 1.02rem;
+    margin-top: 14px;
+  }
+
+  .reading-text, .reading-text-wrap {
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .nav-bar {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .nav-brand h1 {
+    display: none;
+  }
+
+  .day-header-feast {
+    font-size: 0.8rem;
+  }
+
+  /* Improve tap targets on mobile */
+  .feast-card,
+  .widget-box,
+  button {
+    min-height: 44px;
+  }
 }
 
 /* ── Verse Highlighting ── */
